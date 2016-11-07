@@ -11,5 +11,10 @@
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <postgres.host>localhost</postgres.host>
+        <postgres.port>5432</postgres.port>
+        <postgres.database>test_db</postgres.database>
+        <postgres.user>postgres</postgres.user>
+        <postgres.pswd>postgres</postgres.pswd>
     </properties>
 </project>
