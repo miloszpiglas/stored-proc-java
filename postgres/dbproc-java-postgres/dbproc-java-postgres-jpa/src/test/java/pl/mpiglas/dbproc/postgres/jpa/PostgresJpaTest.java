@@ -148,6 +148,10 @@ public class PostgresJpaTest
         Assertions.assertThat(result).containsExactly(100, 200, 300, 400, 500, 600);
     }
 
+    /**
+     * Calls procedure that returns list of rows - records. Each record is
+     * represented as array of objects
+     */
     @Test
     public void shouldReturnListOfRecords()
     {
@@ -159,9 +163,17 @@ public class PostgresJpaTest
         Assertions.assertThat(result).hasSize(6);
     }
 
+    /**
+     * Calls procedure that returns list of recrods and maps them to entities.
+     * In this test we create query with predefined mapping defined in
+     * {@link StrIntRecord}. Since StrIntRecord must be defined as entity
+     * althoug there is no relation in database, validation of schema must be
+     * disabled to run this test without errors.
+     */
     @Test
     public void shouldReturnListOfMappedRecords()
     {
+        // GenRowRecord point to mapping defined for StrIntRecord class
         StoredProcedureQuery proc = em.createStoredProcedureQuery("gen_rows", "GenRowRecord");
         proc.registerStoredProcedureParameter(1, Integer.class, ParameterMode.IN);
         proc.setParameter(1, 6);

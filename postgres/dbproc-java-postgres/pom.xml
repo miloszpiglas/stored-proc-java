@@ -8,6 +8,7 @@
     <modules>
         <module>dbproc-java-postgres-jdbc</module>
         <module>dbproc-java-postgres-jpa</module>
+        <module>dbproc-java-postgres-cayenne</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,6 +40,11 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>5.2.3.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cayenne</groupId>
+                <artifactId>cayenne-server</artifactId>
+                <version>4.0.M3</version>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
