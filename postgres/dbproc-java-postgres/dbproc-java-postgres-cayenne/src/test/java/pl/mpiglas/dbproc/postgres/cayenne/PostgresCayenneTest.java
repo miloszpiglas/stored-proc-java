@@ -1,5 +1,6 @@
 package pl.mpiglas.dbproc.postgres.cayenne;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.apache.cayenne.DataRow;
@@ -44,6 +45,48 @@ public class PostgresCayenneTest
         Optional<DataRow> outRow = outRowStream.findAny();
         Assertions.assertThat(outRow.isPresent()).isTrue();
         Assertions.assertThat(outRow.get()).containsEntry("result", 3).containsEntry("modulo", 1);
+    }
+
+    /**
+     * Calling method that return single value. In this case we define
+     * artificial OUT parameter 'ret', which Cayenne uses to set value returned
+     * from procedure.
+     */
+    @Test
+    public void shouldReturnSingleValueToOutParameter()
+    {
+        ProcedureQuery query = new ProcedureQuery("num_sum");
+        query.addParameter("anum", 100);
+        query.addParameter("bnum", 11);
+
+        ObjectContext ctx = runtime.newContext();
+        QueryResponse response = ctx.performGenericQuery(query);
+        List<DataRow> outRows = response.firstList();
+        Assertions.assertThat(outRows).hasSize(1);
+        Assertions.assertThat(outRows.get(0)).containsEntry("ret", 111);
+    }
+
+    /**
+     * Calling procedure, that returns set of integers. Procedure is called from
+     * SELECT statement.
+     */
+    @Test
+    public void shouldReturnSetOfInt()
+    {
+        ProcedureQuery query = new ProcedureQuery("int_set");
+        query.addParameter("len", 10);
+
+        ObjectContext ctx = runtime.newContext();
+
+        // instead performGenericQuery, we use ObjectContext.performQuery which will
+        // read all rows from procedure
+        List<DataRow> response = ctx.performQuery(query);
+        Assertions.assertThat(response.size()).isEqualTo(10);
+        for (int r = 0; r < response.size(); r++)
+        {
+            Assertions.assertThat(response.get(r)).containsEntry("result", 100 * (r + 1));
+        }
+
     }
 
     @After

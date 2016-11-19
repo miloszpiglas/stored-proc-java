@@ -7,9 +7,9 @@
 		<map-ref name="procedures"/>
 		<data-source>
 			<driver value="org.postgresql.Driver"/>
-			<url value="jdbc:postgresql://localhost:5432/tsstore"/>
+			<url value="jdbc:postgresql://${postgres.host}:${postgres.port}/${postgres.database}"/>
 			<connectionPool min="1" max="1"/>
-			<login userName="milosz" password="mil111"/>
+			<login userName="${postgres.user}" password="${postgres.pswd}"/>
 		</data-source>
 	</node>
 </domain>
