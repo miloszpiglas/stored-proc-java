@@ -10,8 +10,7 @@
         <procedure-parameter name="result" type="INTEGER" direction="out"/>
         <procedure-parameter name="modulo" type="INTEGER" direction="out"/>
     </procedure>
-    <procedure name="gen_rows" returningValue="true">
-        <procedure-parameter name="recSec" type="OTHER" direction="out"/>
+    <procedure name="gen_rows">
         <procedure-parameter name="nrows" type="INTEGER" direction="in"/>
     </procedure>
     <procedure name="int_set">
@@ -22,7 +21,7 @@
         <procedure-parameter name="anum" type="INTEGER" direction="in"/>
         <procedure-parameter name="bnum" type="INTEGER" direction="in"/>
     </procedure>
-    <procedure name="out_txt">
-        <procedure-parameter name="txt" type="INTEGER" direction="out"/>
+    <procedure name="out_text">
+        <procedure-parameter name="txt" type="VARCHAR" direction="out"/>
     </procedure>
 </data-map>

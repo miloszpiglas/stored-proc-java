@@ -89,6 +89,43 @@ public class PostgresCayenneTest
 
     }
 
+    /**
+     * Calling procedure, that returns set of records. Procedure is called from
+     * SELECT statement.
+     */
+    @Test
+    public void shouldReturnSetOfRecords()
+    {
+        ProcedureQuery query = new ProcedureQuery("gen_rows");
+        query.addParameter("nrows", 10);
+
+        ObjectContext ctx = runtime.newContext();
+
+        // instead performGenericQuery, we use ObjectContext.performQuery which will
+        // read all rows from procedure
+        List<DataRow> response = ctx.performQuery(query);
+        Assertions.assertThat(response.size()).isEqualTo(10);
+        for (int r = 0; r < response.size(); r++)
+        {
+            Assertions.assertThat(response.get(r)).containsEntry("str", "ROW" + r).containsEntry("num", r + 1);
+        }
+    }
+
+    /**
+     * Calls procedure and reads result from single output parameter.
+     */
+    @Test
+    public void shouldReadResultFromOutParam()
+    {
+        ProcedureQuery query = new ProcedureQuery("out_text");
+
+        ObjectContext ctx = runtime.newContext();
+        QueryResponse response = ctx.performGenericQuery(query);
+        List<DataRow> outRows = response.firstList();
+        Assertions.assertThat(outRows).hasSize(1);
+        Assertions.assertThat(outRows.get(0)).containsEntry("txt", "out_text");
+    }
+
     @After
     public void releaseResources()
     {
