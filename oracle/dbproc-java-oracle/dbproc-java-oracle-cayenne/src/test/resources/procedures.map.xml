@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-map xmlns="http://cayenne.apache.org/schema/7/modelMap"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://cayenne.apache.org/schema/7/modelMap http://cayenne.apache.org/schema/7/modelMap.xsd"
+          project-version="7">
+    <property name="defaultPackage" value="pl.mpiglas.dbproc.oracle.cay"/>
+    <procedure name="modmul">
+        <procedure-parameter name="anum" type="INTEGER" direction="in"/>
+        <procedure-parameter name="bnum" type="INTEGER" direction="in"/>
+        <procedure-parameter name="result" type="INTEGER" direction="out"/>
+        <procedure-parameter name="modulo" type="INTEGER" direction="out"/>
+    </procedure>
+    <procedure name="gen_rows">
+        <procedure-parameter name="nrows" type="INTEGER" direction="in"/>
+    </procedure>
+    <procedure name="int_set">
+        <procedure-parameter name="len" type="INTEGER" direction="in"/>
+    </procedure>
+    <procedure name="num_sum" returningValue="true">
+        <procedure-parameter name="ret" type="INTEGER" direction="out"/>
+        <procedure-parameter name="anum" type="INTEGER" direction="in"/>
+        <procedure-parameter name="bnum" type="INTEGER" direction="in"/>
+    </procedure>
+    <procedure name="out_text">
+        <procedure-parameter name="txt" type="VARCHAR" direction="out"/>
+    </procedure>
+</data-map>
