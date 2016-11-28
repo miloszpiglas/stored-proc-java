@@ -132,6 +132,132 @@ public class PostgresJdbcTest
         }
     }
 
+    /**
+     * Procedure with two input and two output parameteres is called with {@link CallableStatement
+     * } and result of calculation is read from registered output parameters.
+     *
+     * @throws SQLException
+     */
+    @Test
+    public void shouldReadOutValuesFromParameters() throws SQLException
+    {
+        try (CallableStatement proc = pgCon.prepareCall("{call modmul(?, ?, ?, ?)}"))
+        {
+            proc.setInt(1, 10);
+            proc.setInt(2, 3);
+            proc.registerOutParameter(3, Types.INTEGER);
+            proc.registerOutParameter(4, Types.INTEGER);
+            proc.execute();
+
+            int result = proc.getInt(3);
+            int modulo = proc.getInt(4);
+            Assertions.assertThat(result).isEqualTo(3);
+            Assertions.assertThat(modulo).isEqualTo(1);
+        }
+    }
+
+    /**
+     * Procedure with one out parameter read like return statement.
+     *
+     * @throws SQLException
+     */
+    @Test
+    public void shouldReadOutParameterLikeReturn() throws SQLException
+    {
+        try (CallableStatement proc = pgCon.prepareCall("{? = call out_text()}"))
+        {
+            proc.registerOutParameter(1, Types.VARCHAR);
+            proc.execute();
+            String txt = proc.getString(1);
+            Assertions.assertThat(txt).isEqualTo("out_text");
+        }
+    }
+
+    /**
+     * Procedure writes value to registered output parameter.
+     *
+     * @throws SQLException
+     */
+    @Test
+    public void shouldReadSingleOutputParam() throws SQLException
+    {
+        try (CallableStatement proc = pgCon.prepareCall("{call out_text(?)}"))
+        {
+            proc.registerOutParameter(1, Types.VARCHAR);
+            proc.execute();
+            String txt = proc.getString(1);
+            Assertions.assertThat(txt).isEqualTo("out_text");
+        }
+    }
+
+    /**
+     * Value of output parameter read from result set.
+     *
+     * @throws SQLException
+     */
+    @Test
+    public void shouldReadSingleOutValueFromResultSet() throws SQLException
+    {
+        try (CallableStatement proc = pgCon.prepareCall("{call out_text()}"))
+        {
+            try (ResultSet resultSet = proc.executeQuery())
+            {
+                Assertions.assertThat(resultSet.next()).isTrue();
+                String txt = resultSet.getString(1);
+                Assertions.assertThat(txt).isEqualTo("out_text");
+            }
+        }
+    }
+
+    /**
+     * List of integers read from result set.
+     *
+     * @throws SQLException
+     */
+    @Test
+    public void shouldReadListOfIntegersFromResultSet() throws SQLException
+    {
+        try (CallableStatement proc = pgCon.prepareCall("{call int_set(?)}"))
+        {
+            proc.setInt(1, 10);
+            int index = 0;
+            try (ResultSet resultSet = proc.executeQuery())
+            {
+                while (resultSet.next())
+                {
+                    index = resultSet.getRow();
+                    Assertions.assertThat(resultSet.getInt(1)).isEqualTo(index * 100);
+                }
+            }
+            Assertions.assertThat(index).isEqualTo(10);
+        }
+    }
+
+    /**
+     * List of records read from result set.
+     *
+     * @throws SQLException
+     */
+    @Test
+    public void shouldReadListOfRecordsFromResultSet() throws SQLException
+    {
+        try (CallableStatement proc = pgCon.prepareCall("{call gen_rows(?)}"))
+        {
+            proc.setInt(1, 10);
+            int index = 0;
+            try (ResultSet resultSet = proc.executeQuery())
+            {
+                while (resultSet.next())
+                {
+                    index = resultSet.getRow();
+                    Assertions.assertThat(resultSet.getString(1)).isEqualTo("ROW" + (index - 1));
+                    Assertions.assertThat(resultSet.getInt(2)).isEqualTo(index);
+                }
+            }
+            Assertions.assertThat(index).isEqualTo(10);
+        }
+    }
+
     @After
     public void releaseResources() throws SQLException
     {
